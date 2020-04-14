@@ -27,6 +27,8 @@ import javax.xml.transform.stax.StAXSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 public class APIController {
@@ -80,7 +82,9 @@ public class APIController {
         return "Exito";
     }
     @GetMapping(value="/getIds")
-    public String getIdsEvents(){
+    public List<String> getIdsEvents(){
+        List<String> lstStrings = new ArrayList<String>();
+
         String xml = "<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\n" +
                 "   <soap:Body>\n" +
                 "      <ns0:PushEventsResponse xmlns:ns0=\"urn:nms:rtEvent\">\n" +
@@ -93,27 +97,6 @@ public class APIController {
                 "      </ns0:PushEventsResponse>\n" +
                 "   </soap:Body>\n" +
                 "</soap:Envelope>";
-
-       /* XMLInputFactory xif = XMLInputFactory.newInstance();
-        XMLStreamReader xsr = null;
-        try {
-            xsr = xif.createXMLStreamReader(new StringReader(xml));
-            xsr.nextTag();
-            TransformerFactory tf = TransformerFactory.newInstance();
-            Transformer t = tf.newTransformer();
-
-            while (xsr.nextTag() == XMLStreamConstants.START_ELEMENT && xsr.getLocalName().equals("rtEvent")) {
-                StringWriter stringResult = new StringWriter();
-                t.transform(new StAXSource(xsr), new StreamResult(stringResult));
-                System.out.println("result: \n" + stringResult.toString());
-            }
-        } catch (XMLStreamException e) {
-            e.printStackTrace();
-        } catch (TransformerConfigurationException e) {
-            e.printStackTrace();
-        } catch (TransformerException e) {
-            e.printStackTrace();
-        }*/
 
         //Parser that produces DOM object trees from XML content
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -131,7 +114,7 @@ public class APIController {
             for(int i = 0; i<list.getLength(); i++){
                 Node nodo = list.item(i);
                 String id = nodo.getAttributes().getNamedItem("id").getNodeValue();
-                System.out.println(id);
+                lstStrings.add(id);
             }
         }
         catch (Exception e)
@@ -140,6 +123,6 @@ public class APIController {
         }
 
 
-        return "Exito";
+        return lstStrings;
     }
 }
